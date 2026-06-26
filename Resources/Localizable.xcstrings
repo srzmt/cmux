@@ -207301,6 +207301,23 @@
         }
       }
     },
+    "settings.notifications.desktop.action.openSettings": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open System Settings"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "システム設定を開く"
+          }
+        }
+      }
+    },
     "settings.notifications.desktop.sendTest": {
       "extractionState": "manual",
       "localizations": {
@@ -207318,6 +207335,91 @@
         }
       }
     },
+    "settings.notifications.desktop.status.allowed": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Allowed"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "許可済み"
+          }
+        }
+      }
+    },
+    "settings.notifications.desktop.status.deliverQuietly": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deliver Quietly"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "静かに配信"
+          }
+        }
+      }
+    },
+    "settings.notifications.desktop.status.denied": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Denied"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "拒否"
+          }
+        }
+      }
+    },
+    "settings.notifications.desktop.status.notRequested": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not Requested"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "未要求"
+          }
+        }
+      }
+    },
+    "settings.notifications.desktop.status.temporary": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Temporary"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "一時的"
+          }
+        }
+      }
+    },
     "settings.notifications.desktop.status.unknown": {
       "extractionState": "manual",
       "localizations": {
@@ -207331,6 +207433,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "権限が不明です"
+          }
+        }
+      }
+    },
+    "settings.notifications.desktop.subtitle.allowed": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Desktop notifications are enabled."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "デスクトップ通知は有効です。"
+          }
+        }
+      }
+    },
+    "settings.notifications.desktop.subtitle.denied": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Desktop notifications are disabled in System Settings."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "デスクトップ通知はシステム設定で無効になっています。"
           }
         }
       }

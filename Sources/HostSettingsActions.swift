@@ -1,5 +1,6 @@
 import AppKit
 import CMUXMobileCore
+import Combine
 import CmuxWorkspaces
 import CmuxSettingsUI
 import CmuxFoundation
@@ -91,8 +92,31 @@ final class HostSettingsActions: SettingsHostActions {
     }
 
     func openSystemNotificationSettings() {
-        guard let url = URL(string: "x-apple.systempreferences:com.apple.preference.notifications") else { return }
-        NSWorkspace.shared.open(url)
+        TerminalNotificationStore.shared.openNotificationSettings()
+    }
+
+    func desktopNotificationAuthorizationStatus() -> DesktopNotificationAuthorizationState {
+        Self.desktopNotificationAuthorizationState(from: TerminalNotificationStore.shared.authorizationState)
+    }
+
+    func desktopNotificationAuthorizationStatusUpdates() -> AsyncStream<DesktopNotificationAuthorizationState> {
+        AsyncStream(bufferingPolicy: .bufferingNewest(1)) { continuation in
+            let cancellable = HostSettingsCancellableToken(
+                TerminalNotificationStore.shared.$authorizationState
+                    .map(Self.desktopNotificationAuthorizationState)
+                    .removeDuplicates()
+                    .sink { state in
+                        continuation.yield(state)
+                    }
+            )
+            continuation.onTermination = { _ in
+                cancellable.cancel()
+            }
+        }
+    }
+
+    func refreshDesktopNotificationAuthorizationStatus() {
+        TerminalNotificationStore.shared.refreshAuthorizationStatus()
     }
 
     func restartApp() {
@@ -234,7 +258,7 @@ final class HostSettingsActions: SettingsHostActions {
             let (signals, signalContinuation) = AsyncStream<Void>.makeStream(
                 bufferingPolicy: .bufferingNewest(1)
             )
-            let observer = MobileHostStatusObserverToken(
+            let observer = HostSettingsNotificationObserverToken(
                 NotificationCenter.default.addObserver(
                     forName: .mobileHostStatusDidChange,
                     object: nil,
@@ -281,6 +305,25 @@ final class HostSettingsActions: SettingsHostActions {
             activeConnectionCount: status.activeConnectionCount,
             routes: routes
         )
+    }
+
+    private static func desktopNotificationAuthorizationState(
+        from state: NotificationAuthorizationState
+    ) -> DesktopNotificationAuthorizationState {
+        switch state {
+        case .unknown:
+            return .unknown
+        case .notDetermined:
+            return .notDetermined
+        case .authorized:
+            return .authorized
+        case .denied:
+            return .denied
+        case .provisional:
+            return .provisional
+        case .ephemeral:
+            return .ephemeral
+        }
     }
 
     func mobilePairingDefaultDisplayName() -> String {
@@ -343,7 +386,7 @@ final class HostSettingsActions: SettingsHostActions {
 /// doesn't model `Sendable`; the token is immutable and only hands the opaque
 /// observer back to NotificationCenter's thread-safe removal API. CmuxSettings
 /// has an identical internal token, which isn't `public`, so it's duplicated.
-final class MobileHostStatusObserverToken: @unchecked Sendable {
+final class HostSettingsNotificationObserverToken: @unchecked Sendable {
     private let token: NSObjectProtocol
 
     init(_ token: NSObjectProtocol) {
@@ -352,6 +395,20 @@ final class MobileHostStatusObserverToken: @unchecked Sendable {
 
     func remove() {
         NotificationCenter.default.removeObserver(token)
+    }
+}
+
+/// Wraps a Combine subscription so the `@Sendable` stream-termination closure
+/// can cancel it without capturing a non-Sendable `AnyCancellable` directly.
+final class HostSettingsCancellableToken: @unchecked Sendable {
+    private let cancellable: AnyCancellable
+
+    init(_ cancellable: AnyCancellable) {
+        self.cancellable = cancellable
+    }
+
+    func cancel() {
+        cancellable.cancel()
     }
 }
 
